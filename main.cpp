@@ -1,19 +1,27 @@
 #include <stdio.h>
 #include "tree.h"
 
-int main ()
+int main (int argc, const char *argv[])
 {
     Tree node = {};
-    TreeCtor (&(node.root));
-    node.file = fopen ("data.txt", "r");
-    long file_size = FileSize (node.file);
-    char* data_buf = ReadText (file_size, node.file);
-    int tmp_count = 0;
-    BaseOfData (&(node.root), data_buf, &tmp_count);
-    fclose (node.file);
+    int first_argv = -1;
+    int second_argv = -1;
+    HandleCommandLine (argc, argv, &first_argv, &second_argv, &node);
 
-    node.file = fopen ("data.txt", "w");
-    Akinator (GUESS ,&(node.root));
+    char* data_buf = TreeCtor (&node);
+
+    int tmp_count = 0;
+    BaseOfData (&node, &(node.root), data_buf, &tmp_count);
+
+    if (CheckAkinatorErr (&node) == 1)
+        return 0;
+
+    AkinatorMode (&node, &(node.root), first_argv, second_argv);
+
+    if (CheckAkinatorErr (&node) == 1)
+        return 0;
+
     PrintfNode (node.root, &node);
-    fclose (node.file);
+
+    TreeDtor (&node, node.root);
 }
