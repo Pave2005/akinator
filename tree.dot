@@ -1,0 +1,36 @@
+digraph G { 
+node [shape = record];
+ 10370057700  10370057700 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Shumilo "];
+10370057700 -> 10370057500
+ 10370057700 -> 10370060700 
+ 10370057500 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " women "];
+10370057500 -> 10370057540
+ 10370057500 -> 10370060460 
+ 10370057540 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " child "];
+10370057540 -> 10370057320
+ 10370057540 -> 10370056520 
+ 10370057320 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " sweety "];
+10370057320 -> 10370056360
+ 10370057320 -> 10370056440 
+ 10370056360 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Kira "];
+ 10370056440 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Dasha "];
+ 10370056520 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Kate "];
+ 10370060460 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " student "];
+10370060460 -> 10370060540
+ 10370060460 -> 10370060620 
+ 10370060540 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Paul "];
+ 10370060620 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Dima "];
+ 10370060700 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " child "];
+10370060700 -> 10370060760
+ 10370060700 -> 10370061200 
+ 10370060760 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " boy "];
+10370060760 -> 10370061040
+ 10370060760 -> 10370061120 
+ 10370061040 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Luka "];
+ 10370061120 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Alena "];
+ 10370061200 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " builder "];
+10370061200 -> 10370061260
+ 10370061200 -> 10370061340 
+ 10370061260 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Dane "];
+ 10370061340 [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue  label = " Ann "];
+}

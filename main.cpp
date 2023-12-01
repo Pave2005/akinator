@@ -16,6 +16,8 @@ int main (int argc, const char *argv[])
     if (CheckAkinatorErr (&node) == 1)
         return 0;
 
+    AkinatorDump (&node, node.root);
+
     AkinatorMode (&node, &(node.root), first_argv, second_argv);
 
     if (CheckAkinatorErr (&node) == 1)

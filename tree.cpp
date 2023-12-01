@@ -89,61 +89,61 @@ char* ReadText (long file_size, FILE* file)
 
 void AkinatorInput (Tree* tree, TreeNode** node, const char* command)
 {
-    printf ("Так кто же это?\n");
-    char answer[100] = "";
+    printf ("So who is that?\n");
+    char answer[size_of_arrays] = "";
     scanf ("%s", answer);
     Insert (tree, node, answer, command);
 }
 
 void Akinator (enum INSTR COMMAND, enum PASS_NUM PASS, enum SPEAKER SPEAKER, TreeNode** node, Tree* tree)
 {
-    char for_say[100] = {};
-    char first_answer[100] = "";
+    char for_say[size_of_arrays] = {};
+    char first_answer[size_of_arrays] = "";
     if (tree->counter == 0)
     {
         if (COMMAND == DEFINITION)
         {
-            printf ("Сейчас я угадаю объект, который вы загадали! И дам ему определение!\n");
+            printf ("Now I'll guess the object you made and define it!\n");
             if (SPEAKER == SAY)
-                system ("say \"Сейчас я угадаю объект, который вы загадали! И дам ему определение!\"");
+                system ("say \"Now I'll guess the object you made and define it!\"");
         }
         else if (COMMAND == COMPARE)
         {
-            printf ("Сейчас я отгадаю два объекта! А потом сравню их!\n");
+            printf ("Now I'll guess two objects! And then I'll compare them!\n");
             if (SPEAKER == SAY)
-                system ("say \"Сейчас я отгадаю два объекта! А потом сравню их!\"");
+                system ("say \"Now I'll guess two objects! And then I'll compare them!\"");
         }
         else if (COMMAND == GUESS)
         {
-            printf ("Сейчас я угадаю объект, который вы загадали!\n");
+            printf ("Now I'll guess the object you made!\n");
             if (SPEAKER == SAY)
-                system ("say \"Сейчас я угадаю объект, который вы загадали!\"");
+                system ("say \"Now I'll guess the object you made!\"");
         }
         tree->counter++;
     }
-    if (strcmp ("неизвестно кто...", (*node)->data) == 0)
+    if (strcmp ("Unknown...", (*node)->data) == 0)
     {
-        printf ("Я не знаю кто это:/\n");
+        printf ("I don't know who it is:/\n");
         if (SPEAKER == SAY)
-            system ("say \"Я не знаю кто это\"");
+            system ("say \"I don't know who it is\"");
         AkinatorInput (tree, node, NULL);
-        printf ("Я так и знал!!!\nВ следующий раз я не поддамя тебе!\n\n");
+        printf ("I knew it!!!\nNext time I won't give in to you!\n\n");
         if (SPEAKER == SAY)
-            system ("say \"Я так и знал. В следующий раз я не поддамя тебе!\"");
+            system ("say \"I knew it. Next time I won't give in to you!\"");
         tree->counter = 0;
         return;
     }
-    printf ("Это %s?\n", (*node)->data);
+    printf ("This %s?\n", (*node)->data);
     if (SPEAKER == SAY)
     {
-        strcat (for_say, "say \"Это ");
+        strcat (for_say, "say \"This ");
         strcat (for_say, (*node)->data);
         strcat (for_say, " \"");
         system (for_say);
     }
 
     scanf ("%s", first_answer);
-    if (strcmp ("да", first_answer) == 0)
+    if (strcmp ("yes", first_answer) == 0)
     {
         if ((*node)->left == NULL)
         {
@@ -159,9 +159,9 @@ void Akinator (enum INSTR COMMAND, enum PASS_NUM PASS, enum SPEAKER SPEAKER, Tre
             }
             if (COMMAND == GUESS)
             {
-                printf ("Хорошая была игра!\n");
+                printf ("GG!\n");
                 if (SPEAKER == SAY)
-                    system ("say \"Хорошая была игра!\"");
+                    system ("say \"GG!\""); // good game
             }
             tree->counter = 0;
             return;
@@ -181,19 +181,19 @@ void Akinator (enum INSTR COMMAND, enum PASS_NUM PASS, enum SPEAKER SPEAKER, Tre
             Akinator (COMMAND, DEFAULT, SPEAKER, &((*node)->left), tree);
         }
     }
-    else if (strcmp ("нет", first_answer) == 0)
+    else if (strcmp ("no", first_answer) == 0)
     {
         if ((*node)->right == NULL)
         {
             StackPush (&(tree->compare_1), 0);
-            printf ("Я не знаю кто это:/\n");
+            printf ("I don't know who it is:/\n");
             if (SPEAKER == SAY)
-                system ("say \"Я не знаю кто это\"");
+                system ("say \"I don't know who it is\"");
             AkinatorInput (tree, node, first_answer);
             StackPush (&(tree->compare_1), 0);
-            printf ("Я так и знал!!!\nВ следующий раз я не поддамя тебе!\n\n");
+            printf ("I knew it!!!\nNext time I won't give in to you!\n\n");
             if (SPEAKER == SAY)
-                system ("say \"Я так и знал. В следующий раз я не поддамя тебе!\"");
+                system ("say \"I knew it. Next time I won't give in to you!\"");
             tree->counter = 0;
             return;
         }
@@ -214,19 +214,19 @@ void Akinator (enum INSTR COMMAND, enum PASS_NUM PASS, enum SPEAKER SPEAKER, Tre
     }
     else
     {
-        printf ("Введена неправильная комманда\nпопробуйте еще раз\n");
+        printf ("Incorrect command entered\ntry again\n");
         if (SPEAKER == SAY)
         {
-            system ("say \"Введена неправильная комманда\nпопробуйте еще раз\"");
+            system ("say \"Incorrect command entered\ntry again\"");
         }
         Akinator (COMMAND, PASS, SPEAKER, node, tree);
     }
 }
 
-void BaseOfData (Tree* tree, TreeNode** node, char* data_buf, int* tmp_count)
+void BaseOfData (Tree* tree, TreeNode** node, char* data_buf, int* tmp_count) // если не нужно будет - убрать tree
 {
     int count = 0;
-    char tmp_elem[100] = {};
+    char tmp_elem[size_of_arrays] = {};
     sscanf (data_buf + *tmp_count, "%s%n", tmp_elem, &count);
     *tmp_count += count;
     while (strcmp (")", tmp_elem) == 0)
@@ -250,7 +250,6 @@ void BaseOfData (Tree* tree, TreeNode** node, char* data_buf, int* tmp_count)
     }
     if (strcmp ("\0", tmp_elem) == 0) // спросить у криса
     {
-        printf ("OK\n");
         return;
     }
     (*node)->data = strdup (tmp_elem);
@@ -269,7 +268,7 @@ long FileSize (FILE* file)
 char* TreeCtor (Tree* tree)
 {
     tree->root = (TreeNode*)calloc (1, sizeof (TreeNode));
-    tree->root->data = strdup ("неизвестно кто...");
+    tree->root->data = strdup ("Unknown...");
     tree->root->left = NULL;
     tree->root->right = NULL;
 
@@ -281,7 +280,6 @@ char* TreeCtor (Tree* tree)
 
     tree->file = fopen ("data.txt", "r");
     long file_size = FileSize (tree->file);
-    printf ("%lu\n", file_size);
     char* tmp_buf = ReadText (file_size, tree->file);
     fclose (tree->file);
     tree->file = fopen ("data.txt", "w");
@@ -304,11 +302,11 @@ void PrintfNode (const TreeNode* node, const Tree* tree)
 
 void Insert (Tree* tree, TreeNode** node, char* answer, const char* command)
 {
-    if (strcmp ("неизвестно кто...", (*node)->data) == 0)
+    if (strcmp ("Unknown...", (*node)->data) == 0)
     {
         (*node)->data = strdup (answer);
     }
-    else if (strcmp ("да", command) == 0)
+    else if (strcmp ("yes", command) == 0)
     {
         (*node)->left = (TreeNode*)calloc (1, sizeof (TreeNode));
         (*node)->left->data = strdup (answer);
@@ -319,7 +317,7 @@ void Insert (Tree* tree, TreeNode** node, char* answer, const char* command)
         else
             tree->object_2 = (*node)->left->data;
     }
-    else if (strcmp ("нет", command) == 0)
+    else if (strcmp ("no", command) == 0)
     {
         (*node)->right = (TreeNode*)calloc (1, sizeof (TreeNode));
         (*node)->right->data = strdup (answer);
@@ -355,20 +353,20 @@ void TreeDtor (Tree* tree, TreeNode* node)
 
 void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SPEAKER)
 {
-    char for_say[100] = {}; // подумать над динамическим выделением
+    char for_say[size_of_arrays] = {};
     if (tree->counter == 0)
     {
         Akinator (COMPARE, FIRST_PASS, SPEAKER, node, tree);
-        printf ("Теперь я попытаюсь отгадать второй объект, с которым вы хотите сравнить уже отгаданный...\n");
+        printf ("Now I'll try to guess the second object with which you want to compare the already guessed one...\n");
         if (SPEAKER == SAY)
-            system ("say \"Теперь я попытаюсь отгадать второй объект, с которым вы хотите сравнить уже отгаданный.\"");
+            system ("say \"Now I'll try to guess the second object with which you want to compare the already guessed one.\"");
         Akinator (COMPARE, SECOND_PASS, SPEAKER,  node, tree);
-        printf ("Сейчас я сравню %s и %s:\n", tree->object_1, tree->object_2);
+        printf ("I'll compare now %s and %s:\n", tree->object_1, tree->object_2);
         if (SPEAKER == SAY)
         {
-            strcat (for_say, "say \"Сейчас я сравню ");
+            strcat (for_say, "say \"I'll compare now ");
             strcat (for_say, tree->object_1);
-            strcat (for_say, " и ");
+            strcat (for_say, " and ");
             strcat (for_say, tree->object_2);
             strcat (for_say, "\"");
             system (for_say);
@@ -385,16 +383,16 @@ void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SPEAKER)
     {
         if (way_1 == way_2 && way_1 == 1 && (*node)->left != NULL && (*node)->right != NULL)
         {
-            printf ("%s - %s и %s тоже\n", tree->object_1, (*node)->data, tree->object_2);
+            printf ("%s - %s and  %s too\n", tree->object_1, (*node)->data, tree->object_2);
             if (SPEAKER == SAY)
             {
                 strcat (for_say, "say \"");
                 strcat (for_say, tree->object_1);
-                strcat (for_say, " это ");
+                strcat (for_say, " is ");
                 strcat (for_say, (*node)->data);
-                strcat (for_say, " и ");
+                strcat (for_say, " and ");
                 strcat (for_say, tree->object_2);
-                strcat (for_say, "тоже\"");
+                strcat (for_say, "too\"");
                 system (for_say);
             }
             AkinatorCompare (&((*node)->left), tree, SPEAKER);
@@ -402,16 +400,16 @@ void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SPEAKER)
         }
         else if (way_1 == way_2 && way_1 == 0 && (*node)->left != NULL && (*node)->right != NULL)
         {
-            printf ("%s - не %s и %s тоже\n", tree->object_1, (*node)->data, tree->object_2);
+            printf ("%s is not %s and %s too\n", tree->object_1, (*node)->data, tree->object_2);
             if (SPEAKER == SAY)
             {
                 strcat (for_say, "say \"");
                 strcat (for_say, tree->object_1);
-                strcat (for_say, " это не ");
+                strcat (for_say, " is not ");
                 strcat (for_say, (*node)->data);
-                strcat (for_say, " и ");
+                strcat (for_say, " and ");
                 strcat (for_say, tree->object_2);
-                strcat (for_say, "тоже\"");
+                strcat (for_say, "too\"");
                 system (for_say);
             }
             AkinatorCompare (&((*node)->right), tree, SPEAKER);
@@ -421,9 +419,9 @@ void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SPEAKER)
     }
     if ((((*node)->left == NULL && (*node)->right == NULL)) || tree->compare_1.size == 0)
     {
-        printf ("Хорошая была игра!");
+        printf ("GG!");
         if (SPEAKER == SAY)
-            system ("say \"Хорошая была игра!\"");
+            system ("say \"GG!\"");
         StackDtor (&(tree->compare_1));
         StackDtor (&(tree->compare_2));
         tree->counter = 0;
@@ -432,32 +430,32 @@ void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SPEAKER)
 
     if (way_1 == 0)
     {
-        printf ("%s - не %s, и %s тоже\n", tree->object_1, (*node)->data, tree->object_2);
+        printf ("%s is not %s, and %s too\n", tree->object_1, (*node)->data, tree->object_2);
         if (SPEAKER == SAY)
         {
             strcat (for_say, "say \"");
             strcat (for_say, tree->object_1);
-            strcat (for_say, " это не ");
+            strcat (for_say, " is not ");
             strcat (for_say, (*node)->data);
-            strcat (for_say, " и ");
+            strcat (for_say, " and ");
             strcat (for_say, tree->object_2);
-            strcat (for_say, "тоже\"");
+            strcat (for_say, "too\"");
             system (for_say);
         }
         AkinatorCompare (&((*node)->right), tree, SPEAKER);
     }
     else if (way_1 == 1)
     {
-        printf ("%s - %s, а %s нет\n", tree->object_1, (*node)->data, tree->object_2);
+        printf ("%s - %s, but %s isn't\n", tree->object_1, (*node)->data, tree->object_2);
         if (SPEAKER == SAY)
         {
             strcat (for_say, "say \"");
             strcat (for_say, tree->object_1);
-            strcat (for_say, " это ");
+            strcat (for_say, " is ");
             strcat (for_say, (*node)->data);
-            strcat (for_say, " а ");
+            strcat (for_say, " but ");
             strcat (for_say, tree->object_2);
-            strcat (for_say, "нет\"");
+            strcat (for_say, "isn't\"");
             system (for_say);
         }
         AkinatorCompare (&((*node)->left), tree, SPEAKER);
@@ -466,7 +464,7 @@ void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SPEAKER)
 
 void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SPEAKER)
 {
-    char for_say[100] = {};
+    char for_say[size_of_arrays] = {};
     if (tree->counter == 0)
     {
         Akinator (DEFINITION, FIRST_PASS, SPEAKER, &node, tree);
@@ -474,12 +472,12 @@ void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SPEAKER)
         {
             return;
         }
-        printf ("\n%s - это ", tree->object_1);
+        printf ("\n%s - is ", tree->object_1);
         if (SPEAKER == SAY)
         {
             strcat (for_say, "say \"");
             strcat (for_say, tree->object_1);
-            strcat (for_say, " это \"");
+            strcat (for_say, " is \"");
             system (for_say);
         }
         tree->counter++;
@@ -491,12 +489,12 @@ void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SPEAKER)
     {
         if (strcmp (node->left->data, tree->object_1) == 0)
         {
-            printf ("и %s.\nХорошая была игра!", node->data);
+            printf ("and %s.\nGG!", node->data);
             if (SPEAKER == SAY)
             {
-                strcat (for_say, "say \"и ");
+                strcat (for_say, "say \"and ");
                 strcat (for_say, node->data);
-                strcat (for_say, " Хорошая была игра!\"");
+                strcat (for_say, " GG!\"");
                 system (for_say);
             }
         }
@@ -517,21 +515,21 @@ void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SPEAKER)
     {
         if (strcmp (node->right->data, tree->object_1) == 0)
         {
-            printf ("и не %s.\nХорошая была игра!", node->data);
+            printf ("and not %s.\nGG!", node->data);
             if (SPEAKER == SAY)
             {
-                strcat (for_say, "say \"и не ");
+                strcat (for_say, "say \"and not ");
                 strcat (for_say, node->data);
-                strcat (for_say, " Хорошая была игра!\"");
+                strcat (for_say, " GG!\"");
                 system (for_say);
             }
         }
         else
         {
-            printf ("не %s, ", node->data);
+            printf ("not %s, ", node->data);
             if (SPEAKER == SAY)
             {
-                strcat (for_say, "say \"не ");
+                strcat (for_say, "say \"not ");
                 strcat (for_say, node->data);
                 strcat (for_say, "\"");
                 system (for_say);
@@ -546,6 +544,44 @@ void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SPEAKER)
         return;
     }
 }
+
+void AkinatorDump (Tree* tree, TreeNode* node)
+{
+    FILE* file = fopen ("tree.dot", "w");
+    fprintf (file, "digraph G { \n"
+                    "node [shape = record];\n"
+                    " %o ", node);
+    TreeBody (node, file);
+    fprintf (file, "}\n");
+    fclose (file);
+    system ("dot -T png tree.dot -o tree.png");
+}
+
+void TreeBody (TreeNode* node, FILE* file)
+{
+    fprintf (file, " %o [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue "
+                          " label = \" %s \"];\n",node, node->data);
+    if (node->left != NULL)
+    {
+        fprintf (file, "%o -> %o", node, node->left);
+    }
+    else
+    {
+        return;
+    }
+    if (node->right != NULL)
+    {
+        fprintf (file, "\n %o -> %o \n", node, node->right);
+    }
+    else
+    {
+        return;
+    }
+
+    TreeBody (node->left, file);
+    TreeBody (node->right, file);
+}
+
 
 void AkinatorVerifier (Tree* tree, TreeNode* node)
 {

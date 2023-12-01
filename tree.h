@@ -4,6 +4,8 @@
 
 #define RED "\x1b[31;41m"
 
+const int size_of_arrays = 100;
+
 struct TreeNode
 {
     TreeNode* left;
@@ -73,5 +75,7 @@ void TreeDtor (Tree* tree, TreeNode* node);
 void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SAY);
 void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SAY);
 void AkinatorVerifier (Tree* tree, TreeNode* node);
+void TreeBody (TreeNode* node, FILE* file);
+void AkinatorDump (Tree* tree, TreeNode* node);
 
 #endif
