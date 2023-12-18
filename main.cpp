@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "tree.h"
+#include "files.h"
 
 int main (int argc, const char *argv[])
 {
@@ -10,7 +11,7 @@ int main (int argc, const char *argv[])
             "Write \"definition\" if you want me to give the difinition to the object!\n\n"
             "Write \"guess\" if you want me to guess the intended object!\n\n"
             "Write \"compare\" if you want me to compare two objeects!\n\n");
-    scanf ("%s", mode);
+    scanf ("%10s", mode);
 
     HandleCommandLine (argc, argv, &first_arg, &node);
 
@@ -24,7 +25,7 @@ int main (int argc, const char *argv[])
 
     AkinatorDump (&node, node.root);
 
-    AkinatorMode (&node, &(node.root), first_arg, mode);
+    AkinatorMode (&(node.root), first_arg, mode);
 
     if (CheckAkinatorErr (&node) == 1)
         return 0;

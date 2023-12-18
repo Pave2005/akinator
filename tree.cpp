@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include "files.h"
 #include "tree.h"
-#include "string.h"
 
 int CheckAkinatorErr (Tree* tree)
 {
@@ -18,14 +15,14 @@ void HandleCommandLine (int argc, const char *argv[], int* first_arg, Tree* tree
 {
     if (argc == 1)
     {
-        *first_arg = NO_SAY;
+        *first_arg = SPEAKER_OFF;
         return;
     }
     else if (argc > 1)
     {
         if (strcmp ("say", argv [1]) == 0)
         {
-            *first_arg = SAY;
+            *first_arg = SPEAKER_ON;
             return;
         }
         else
@@ -36,11 +33,11 @@ void HandleCommandLine (int argc, const char *argv[], int* first_arg, Tree* tree
     }
 }
 
-void AkinatorMode (Tree* tree, TreeNode** node, int first_arg, char* mode)
+void AkinatorMode (TreeNode** node, int first_arg, char* mode)
 {
     if (strcmp ("guess", mode) == 0)
     {
-        Akinator ((enum SPEAKER)first_arg, node, tree);
+        Akinator (first_arg, node);
     }
     else if (strcmp ("definition", mode) == 0)
     {
@@ -49,7 +46,7 @@ void AkinatorMode (Tree* tree, TreeNode** node, int first_arg, char* mode)
         PrintfPhrase (first_arg, "Enter the word I should describe\n");
 
         scanf ("%20s", object);
-        AkinatorDefinition (*node, (enum SPEAKER)first_arg, object);
+        AkinatorDefinition (*node, first_arg, object);
     }
     else if (strcmp ("compare", mode) == 0)
     {
@@ -62,26 +59,20 @@ void AkinatorMode (Tree* tree, TreeNode** node, int first_arg, char* mode)
         PrintfPhrase (first_arg, "Enter the second word\n");
         scanf ("%20s", object_2);
 
-        AkinatorCompare (*node, (enum SPEAKER)first_arg, object_1, object_2);
+        AkinatorCompare (*node, first_arg, object_1, object_2);
     }
 }
 
-char* ReadText (long file_size, FILE* file)
-{
-    char* buf = (char*)calloc (file_size + 1, sizeof (char));
-    fread (buf, sizeof (char), file_size, file);
-    return buf;
-}
-
-void AkinatorRequestNewObject (Tree* tree, TreeNode** node, const char* command)
+void AkinatorRequestNewObject (TreeNode** node, const char* command)
 {
     printf ("So who is that?\n");
+
     char answer[size_of_arrays] = "";
     scanf ("%s", answer);
-    InsertNode (tree, node, answer, command);
+    InsertNode (node, answer, command);
 }
 
-void Akinator (enum SPEAKER speaker, TreeNode** node, Tree* tree)
+void Akinator (int speaker, TreeNode** node)
 {
     char answer[size_of_arrays] = "";
     static int start_phrase = 0;
@@ -96,7 +87,7 @@ void Akinator (enum SPEAKER speaker, TreeNode** node, Tree* tree)
     {
         PrintfPhrase (speaker, "I don't know who it is:/\n");
 
-        AkinatorRequestNewObject (tree, node, NULL);
+        AkinatorRequestNewObject (node, NULL);
 
         PrintfPhrase (speaker, "I knew it!!!\nNext time I won't give in to you!\n\n");
 
@@ -113,7 +104,8 @@ void Akinator (enum SPEAKER speaker, TreeNode** node, Tree* tree)
             PrintfPhrase (speaker, "GG!\n");
             return;
         }
-        Akinator (speaker, &((*node)->left), tree);
+
+        Akinator (speaker, &((*node)->left));
     }
     else if (strcmp ("no", answer) == 0)
     {
@@ -121,63 +113,19 @@ void Akinator (enum SPEAKER speaker, TreeNode** node, Tree* tree)
         {
             PrintfPhrase (speaker, "I don't know who it is:/\n");
 
-            AkinatorRequestNewObject (tree, node, answer);
+            AkinatorRequestNewObject (node, answer);
 
             PrintfPhrase (speaker, "I knew it!!!\nNext time I won't give in to you!\n\n");
 
             return;
         }
-        Akinator (speaker, &((*node)->right), tree);
+        Akinator (speaker, &((*node)->right));
     }
     else
     {
         PrintfPhrase (speaker, "Incorrect command entered\ntry again\n");
-        Akinator (speaker, node, tree);
+        Akinator (speaker, node);
     }
-}
-
-void ReadDatabase (TreeNode** node, char* data_buf, int* tmp_count)
-{
-    int count = 0;
-    char tmp_elem[size_of_arrays] = {};
-    sscanf (data_buf + *tmp_count, "%s%n", tmp_elem, &count);
-    *tmp_count += count;
-    while (strcmp (")", tmp_elem) == 0)
-    {
-        sscanf (data_buf + *tmp_count, "%s%n", tmp_elem, &count);
-        *tmp_count += count;
-    }
-
-    if (strcmp ("(", tmp_elem) == 0)
-    {
-        if (*tmp_count != count)
-        {
-            *node = (TreeNode*)calloc (1, sizeof (TreeNode));
-        }
-        sscanf (data_buf + *tmp_count, "%s%n", tmp_elem, &count);
-        *tmp_count += count;
-    }
-    if (strcmp ("nil", tmp_elem) == 0)
-    {
-        *node = NULL;
-        return;
-    }
-    if (strcmp ("\0", tmp_elem) == 0)
-    {
-        return;
-    }
-    (*node)->data = strdup (tmp_elem);
-
-    ReadDatabase (&((*node)->left), data_buf, tmp_count);
-    ReadDatabase (&((*node)->right), data_buf, tmp_count);
-}
-
-long FileSize (FILE* file)
-{
-    fseek (file, 0, SEEK_END);
-    long size = ftell (file);
-    fseek (file, 0, SEEK_SET);
-    return size;
 }
 
 char* TreeCtor (Tree* tree)
@@ -197,22 +145,7 @@ char* TreeCtor (Tree* tree)
     return tmp_buf;
 }
 
-
-void PrintNode (const TreeNode* node, const Tree* tree)
-{
-    if (node == NULL)
-    {
-        fprintf (tree->file, " nil ");
-        return;
-    }
-    fprintf (tree->file, " ( ");
-    fprintf (tree->file, " %s ", node->data);
-    PrintNode (node->left, tree);
-    PrintNode (node->right, tree);
-    fprintf (tree->file, " ) ");
-}
-
-void InsertNode (Tree* tree, TreeNode** node, char* answer, const char* command)
+void InsertNode (TreeNode** node, char* answer, const char* command)
 {
     if (strcmp ("Unknown...", (*node)->data) == 0)
     {
@@ -254,7 +187,7 @@ void TreeDtor (Tree* tree, TreeNode* node)
     }
 }
 
-void AkinatorCompare (TreeNode* node, enum SPEAKER speaker, char* object_1, char* object_2)
+void AkinatorCompare (TreeNode* node, int speaker, char* object_1, char* object_2)
 {
     if (node == NULL)
         return;
@@ -296,14 +229,14 @@ void AkinatorCompare (TreeNode* node, enum SPEAKER speaker, char* object_1, char
 
     if (first_divergence == 0)
     {
-        if (way_1 == way_2 && way_1 == 1)
+        if (way_1 == YES && way_2 == YES)
         {
             PrintfPhrase (speaker, "%s is %s and %s too\n", object_1, node->data, object_2);
 
             AkinatorCompare (node->left, speaker, object_1, object_2);
             return;
         }
-        else if (way_1 == way_2 && way_1 == 0)
+        else if (way_1 == NO && way_2 == NO)
         {
             PrintfPhrase (speaker, "%s is not %s and %s too\n", object_1, node->data, object_2);
 
@@ -362,7 +295,7 @@ int DoWay (stack* stack, TreeNode* node, char* object)
     return 0;
 }
 
-void AkinatorDefinition (TreeNode* node, enum SPEAKER speaker, char* object)
+void AkinatorDefinition (TreeNode* node, int speaker, char* object)
 {
     static int status = 0;
     static int stack_on = 0;
@@ -430,7 +363,7 @@ void AkinatorDump (Tree* tree, TreeNode* node)
 void DumpTreeNode (TreeNode* node, FILE* file)
 {
     fprintf (file, " %o [shape = doubleoctagon, style = filled, fillcolor = cornflowerblue "
-                          " label = \" %s \"];\n",node, node->data);
+                   " label = \" %s \"];\n",node, node->data);
 
     if (node->left != NULL)
         fprintf (file, "%o -> %o", node, node->left);
@@ -469,6 +402,6 @@ void PrintfPhrase (int speaker, char* format, ...)
     vsprintf (array, format, ptr);
     va_end(ptr);
     sprintf (for_say, "say \"%s\"", array);
-    if (speaker == SAY)
+    if (speaker == SPEAKER_ON)
         system (for_say);
 }
