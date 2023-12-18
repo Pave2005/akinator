@@ -4,7 +4,9 @@
 
 #define RED "\x1b[31;41m"
 
-const int size_of_arrays = 100;
+const int size_of_arrays = 200;
+const int enmpty_elem = -1;
+const int objects_size = 21;
 
 struct TreeNode
 {
@@ -17,26 +19,13 @@ struct Tree
 {
     TreeNode* root;
     FILE* file;
-    stack compare_1;
-    stack compare_2;
-
-    int counter;
-    char* object_1;
-    char* object_2;
 
     long long status;
 };
 
 enum AKINATOR_ERRORS
 {
-    INCORRECT_ARGV = 0,     // не правильный ввод в коммандную строку
-};
-
-enum PASS_NUM
-{
-    FIRST_PASS = 1,
-    SECOND_PASS = 2,
-    DEFAULT = 0,
+    INCORRECT_ARGV = 0,
 };
 
 enum WAY
@@ -46,11 +35,10 @@ enum WAY
     DEFAULT_WAY = 3,
 };
 
-enum INSTR
+enum STACK_WAY
 {
-    GUESS = 1,
-    COMPARE = 2,
-    DEFINITION = 3,
+    YES = 1,
+    NO = 0,
 };
 
 enum SPEAKER
@@ -59,23 +47,26 @@ enum SPEAKER
     NO_SAY = 0,
 };
 
+void CreateNewObject (TreeNode* node, char* answer);
+int DoWay (stack* stack, TreeNode* node, char* object);
 int CheckAkinatorErr (Tree* tree);
-void AkinatorMode (Tree* tree, TreeNode** node, int first_argv, int second_argv);
-void HandleCommandLine (int argc, const char *argv[], int* first_argv, int* second_argv, Tree* tree);
+void AkinatorMode (Tree* tree, TreeNode** node, int first_arg, char* mode);
+void HandleCommandLine (int argc, const char *argv[], int* first_arg, Tree* tree);
 char* ReadText (long file_size, FILE* file);
 long FileSize (FILE* file);
 char* TreeCtor (Tree* tree);
-void PrintfNode (const TreeNode* node, const Tree* tree);
+void PrintNode (const TreeNode* node, const Tree* tree);
 void ReadFile (Tree* tree);
-void Insert (Tree* tree, TreeNode** node, char* answer, const char* command);
-void AkinatorInput (Tree* tree, TreeNode** node, const char* command);
-void Akinator (enum INSTR COMMAND, enum PASS_NUM PASS, enum SPEAKER SAY, TreeNode** node, Tree* tree);
-void BaseOfData (Tree* tree, TreeNode** node, char* data_buf, int* tmp_count);
+void InsertNode (Tree* tree, TreeNode** node, char* answer, const char* command);
+void AkinatorRequestNewObject (Tree* tree, TreeNode** node, const char* command);
+void Akinator (enum SPEAKER speaker, TreeNode** node, Tree* tree);
+void ReadDatabase (TreeNode** node, char* data_buf, int* tmp_count);
 void TreeDtor (Tree* tree, TreeNode* node);
-void AkinatorDefinition (TreeNode* node, Tree* tree, enum SPEAKER SAY);
-void AkinatorCompare (TreeNode** node, Tree* tree, enum SPEAKER SAY);
+void AkinatorDefinition (TreeNode* node, enum SPEAKER speaker, char* object);
+void AkinatorCompare (TreeNode* node, enum SPEAKER SPEAKER, char* object_1, char* object_2);
 void AkinatorVerifier (Tree* tree, TreeNode* node);
-void TreeBody (TreeNode* node, FILE* file);
+void DumpTreeNode (TreeNode* node, FILE* file);
 void AkinatorDump (Tree* tree, TreeNode* node);
+void PrintfPhrase (int speaker, char* format, ...);
 
 #endif
